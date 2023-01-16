@@ -1,5 +1,6 @@
 package com.learn.kharis.users.service;
 
+import com.learn.kharis.exception.NotFoundException;
 import com.learn.kharis.users.dto.request.ForgotPasswordRequest;
 import com.learn.kharis.users.dto.request.SignInRequest;
 import com.learn.kharis.users.dto.request.SignUpRequest;
@@ -44,6 +45,9 @@ public class AuthService {
 
         String jwtToken = jwtUtils.generateToken(user);
         return SignUpResponse.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole().name())
                 .token(jwtToken)
                 .build();
     }
@@ -61,12 +65,19 @@ public class AuthService {
         String jwtToken = jwtUtils.generateToken(user);
 
         return SignInResponse.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole().name())
                 .token(jwtToken)
                 .build();
     }
 
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        AppUser appUser = userRepo.findByEmail(forgotPasswordRequest.getEmail())
+                .orElseThrow(() -> new NotFoundException("User with email " +
+                        forgotPasswordRequest.getEmail() + " Not Found"));
         return ForgotPasswordResponse.builder()
+                .token(passwordEncoder.encode(appUser.getUsername()))
                 .build();
     }
 }

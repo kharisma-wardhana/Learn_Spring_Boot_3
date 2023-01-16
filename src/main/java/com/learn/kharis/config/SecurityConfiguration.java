@@ -46,7 +46,7 @@ public class SecurityConfiguration {
 
                 // Set permission on endpoints
                 .authorizeHttpRequests()
-                .requestMatchers("auth/**")
+                .requestMatchers("/api/v1/auth/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

@@ -50,7 +50,7 @@ public class JWTFilter extends OncePerRequestFilter {
         try {
             username = jwtUtils.getUsernameFromToken(jwtToken);
         } catch (JWTVerificationException ex) {
-            throw new UnauthorizedException("Failed to verify JWT");
+            throw new UnauthorizedException(ex.getMessage());
         }
 
         // Once we get token validate it
